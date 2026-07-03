@@ -1,53 +1,86 @@
+/*=========================================
+  LOAD PRODUCTS FROM SUPABASE
+=========================================*/
+
 async function loadProducts() {
+
     const productGrid = document.getElementById("productGrid");
 
     if (!productGrid) return;
 
-    // Show loading message
     productGrid.innerHTML = "<h3>Loading products...</h3>";
 
-    const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .order("created_at", { ascending: false });
+    try {
 
-    if (error) {
-        console.error(error);
-        productGrid.innerHTML = "<h3>Unable to load products.</h3>";
-        return;
-    }
+        const { data, error } = await window.supabase
+            .from("products")
+            .select("*")
+            .order("created_at", { ascending: false });
 
-    productGrid.innerHTML = "";
+        console.log("Products:", data);
+        console.log("Error:", error);
 
-    data.forEach(product => {
+        if (error) throw error;
 
-        productGrid.innerHTML += `
-            <div class="product-card">
+        if (!data || data.length === 0) {
 
-                <img src="${product.image}" alt="${product.name}">
+            productGrid.innerHTML = "<h3>No products available.</h3>";
+            return;
 
-                <div class="product-info">
+        }
 
-                    <h3>${product.name}</h3>
+        productGrid.innerHTML = "";
 
-                    <p>${product.description}</p>
+        data.forEach(product => {
 
-                    <p><strong>${product.price}</strong></p>
+            productGrid.innerHTML += `
 
-                    <a
-                        href="https://wa.me/2348030483262?text=Hello, I'm interested in ordering ${encodeURIComponent(product.name)}."
-                        target="_blank">
+                <div class="product-card">
 
-                        Order Now
+                    <img
+                        src="${product.image || 'https://via.placeholder.com/400x300?text=No+Image'}"
+                        alt="${product.name}">
 
-                    </a>
+                    <div class="product-info">
+
+                        <h3>${product.name}</h3>
+
+                        <p>${product.description}</p>
+
+                        <p style="font-weight:bold; color:#D4AF37; margin-bottom:20px;">
+                            ${product.price}
+                        </p>
+
+                        <a
+                            href="https://wa.me/2348030483262?text=Hello,%20I'm%20interested%20in%20ordering%20${encodeURIComponent(product.name)}."
+                            target="_blank">
+
+                            Order Now
+
+                        </a>
+
+                    </div>
 
                 </div>
 
-            </div>
+            `;
+
+        });
+
+    }
+
+    catch (err) {
+
+        console.error(err);
+
+        productGrid.innerHTML = `
+            <h3 style="color:red;">
+                ${err.message}
+            </h3>
         `;
-    });
+
+    }
 
 }
 
-loadProducts();
+document.addEventListener("DOMContentLoaded", loadProducts);
