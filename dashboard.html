@@ -16,29 +16,48 @@
 
 <h1>God's Goodness Venture Dashboard</h1>
 
-<div id="adminStats">
+<button id="logoutBtn">Logout</button>
+
+<div class="stats">
 
     <div class="card">
-        <h2>Total Products</h2>
-        <p id="totalProducts">0</p>
+        <h2>Products</h2>
+        <h1 id="totalProducts">0</h1>
     </div>
 
     <div class="card">
-        <h2>Total Reviews</h2>
-        <p id="totalReviews">0</p>
+        <h2>Reviews</h2>
+        <h1 id="totalReviews">0</h1>
     </div>
 
     <div class="card">
         <h2>Website Visits</h2>
-        <p id="totalVisits">0</p>
+        <h1 id="totalVisits">0</h1>
     </div>
 
 </div>
+
+<hr>
+
+<h2>Add Product</h2>
+
+<form id="productForm">
+
+    <input type="text" id="productName" placeholder="Product Name" required>
+
+    <textarea id="productDescription" placeholder="Description"></textarea>
+
+    <input type="text" id="productPrice" placeholder="Price">
+
+    <input type="file" id="productImage" accept="image/*">
+
+    <button type="submit">Add Product</button>
+
+</form>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase.js"></script>
 <script src="dashboard.js"></script>
 
 </body>
-
 </html>
