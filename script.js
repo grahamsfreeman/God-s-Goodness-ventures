@@ -108,66 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
   REVIEW FORM
 =========================================*/
 
-const reviewForm = document.getElementById("reviewForm");
 
-const reviewContainer =
-document.querySelector(".review-container");
-
-reviewForm.addEventListener("submit", function(e){
-
-    e.preventDefault();
-
-    const name =
-    document.getElementById("name").value.trim();
-
-    const rating =
-    document.getElementById("rating").value;
-
-    const message =
-    document.getElementById("message").value.trim();
-
-    if(name === "" || message === ""){
-
-        alert("Please complete the review form.");
-
-        return;
-
-    }
-
-    const reviewCard =
-    document.createElement("div");
-
-    reviewCard.className = "review-card";
-
-    reviewCard.innerHTML = `
-
-        <div class="stars">
-
-            ${rating}
-
-        </div>
-
-        <p>
-
-            "${message}"
-
-        </p>
-
-        <h4>
-
-            - ${name}
-
-        </h4>
-
-    `;
-
-    reviewContainer.prepend(reviewCard);
-
-    reviewForm.reset();
-
-    alert("Thank you for your review!");
-
-});
 
 /*=========================================
   GALLERY LIGHTBOX
