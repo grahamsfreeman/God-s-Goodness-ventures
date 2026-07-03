@@ -1,19 +1,53 @@
 async function loadProducts() {
 
-    alert("Fetching products...");
+    const productGrid = document.getElementById("productGrid");
 
-    const { data, error } = await window.supabaseClient
-        .from("products")
-        .select("*");
-
-    if (error) {
-        alert("Database Error:\n" + error.message);
+    if (!productGrid) {
+        alert("productGrid not found!");
         return;
     }
 
-    alert("Products found: " + data.length);
+    const { data, error } = await window.supabaseClient
+        .from("products")
+        .select("*")
+        .order("id", { ascending: false });
 
-    console.log(data);
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    // Clear the existing hardcoded products
+    productGrid.innerHTML = "";
+
+    data.forEach(product => {
+
+        productGrid.innerHTML += `
+            <div class="product-card">
+
+                <img src="${product.image}" alt="${product.name}">
+
+                <div class="product-info">
+
+                    <h3>${product.name}</h3>
+
+                    <p>${product.description}</p>
+
+                    <h4>${product.price}</h4>
+
+                    <a href="https://wa.me/2348030483262?text=Hello,%20I'm%20interested%20in%20${encodeURIComponent(product.name)}" class="primary-btn">
+
+                        Order Now
+
+                    </a>
+
+                </div>
+
+            </div>
+        `;
+
+    });
+
 }
 
 loadProducts();
