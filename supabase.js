@@ -13,5 +13,3 @@ const client = window.supabase.createClient(
 // Make it available to every JavaScript file
 window.supabaseClient = client;
 
-// Test
-alert("Supabase Connected Successfully!");
