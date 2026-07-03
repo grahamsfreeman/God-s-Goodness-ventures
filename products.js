@@ -1,6 +1,4 @@
-/*=========================================
-  LOAD PRODUCTS FROM SUPABASE
-=========================================*/
+import { supabase } from "./supabase.js";
 
 async function loadProducts() {
 
@@ -10,31 +8,39 @@ async function loadProducts() {
 
     productGrid.innerHTML = "<h3>Loading products...</h3>";
 
-    try {
+    const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-        const { data, error } = await window.supabase
-            .from("products")
-            .select("*")
-            .order("created_at", { ascending: false });
+    if (error) {
+        productGrid.innerHTML = `<h3>${error.message}</h3>`;
+        console.error(error);
+        return;
+    }
 
-        console.log("Products:", data);
-        console.log("Error:", error);
+    if (!data.length) {
+        productGrid.innerHTML = "<h3>No products available.</h3>";
+        return;
+    }
 
-        if (error) throw error;
+    productGrid.innerHTML = "";
 
-        if (!data || data.length === 0) {
+    data.forEach(product => {
+        productGrid.innerHTML += `
+            <div class="product-card">
+                <img src="${product.image || "https://via.placeholder.com/300"}" alt="${product.name}">
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p>${product.description || ""}</p>
+                    <p><strong>${product.price || ""}</strong></p>
+                </div>
+            </div>
+        `;
+    });
+}
 
-            productGrid.innerHTML = "<h3>No products available.</h3>";
-            return;
-
-        }
-
-        productGrid.innerHTML = "";
-
-        data.forEach(product => {
-
-            productGrid.innerHTML += `
-
+document.addEventListener("DOMContentLoaded", loadProducts);
                 <div class="product-card">
 
                     <img
