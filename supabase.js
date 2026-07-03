@@ -1,20 +1,17 @@
-alert("1");
+// Supabase Configuration
 
 const SUPABASE_URL = "https://azqtynfqhpkyciehlkwh.supabase.co";
 
-alert("2");
-
 const SUPABASE_KEY = "sb_publishable_zsAmQR8Hu00frIBoRPebCA_A6GxX8dL";
 
-alert("3");
-
+// Create Supabase Client
 const client = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
 
-alert("4");
-
+// Make it available to every JavaScript file
 window.supabaseClient = client;
 
-alert("5");
+// Test
+alert("Supabase Connected Successfully!");
