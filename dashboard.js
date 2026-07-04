@@ -292,7 +292,7 @@ async function loadProducts() {
 
                 <button
                     class="edit-btn"
-                    onclick="editProduct(${product.id})">
+                    onclick="editProduct('${product.id}')">
 
                     Edit
 
@@ -300,7 +300,7 @@ async function loadProducts() {
 
                 <button
                     class="delete-btn"
-                    onclick="deleteProduct(${product.id})">
+                    onclick="deleteProduct('${product.id}')">
 
                     Delete
 
