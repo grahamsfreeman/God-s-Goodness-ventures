@@ -375,6 +375,26 @@ if (copyright) {
         `© ${year} God's Goodness Venture. All Rights Reserved.`;
 
 }
+async function increaseVisits() {
+
+    const { data, error } = await window.supabaseClient
+        .from("visits")
+        .select("count")
+        .eq("id", 1)
+        .single();
+
+    if (error) return;
+
+    await window.supabaseClient
+        .from("visits")
+        .update({
+            count: data.count + 1
+        })
+        .eq("id", 1);
+
+}
+
+increaseVisits();
 
 
 /*=========================================
