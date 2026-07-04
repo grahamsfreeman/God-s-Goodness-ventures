@@ -375,7 +375,21 @@ if (copyright) {
         `© ${year} God's Goodness Venture. All Rights Reserved.`;
 
 }
+/*=========================================
+  WEBSITE VISIT COUNTER
+=========================================*/
+
 async function increaseVisits() {
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const lastVisit = localStorage.getItem("ggv_last_visit");
+
+    if (lastVisit === today) {
+
+        return;
+
+    }
 
     const { data, error } = await window.supabaseClient
         .from("visits")
@@ -383,14 +397,32 @@ async function increaseVisits() {
         .eq("id", 1)
         .single();
 
-    if (error) return;
+    if (error) {
 
-    await window.supabaseClient
+        console.error(error);
+
+        return;
+
+    }
+
+    const { error: updateError } = await window.supabaseClient
         .from("visits")
         .update({
-            count: data.count + 1
+
+            count: (data.count || 0) + 1
+
         })
         .eq("id", 1);
+
+    if (updateError) {
+
+        console.error(updateError);
+
+        return;
+
+    }
+
+    localStorage.setItem("ggv_last_visit", today);
 
 }
 
