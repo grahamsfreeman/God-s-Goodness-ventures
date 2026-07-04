@@ -331,6 +331,8 @@ async function editProduct(id) {
 
     if (error) {
 
+        console.error(error);
+
         alert(error.message);
 
         return;
@@ -340,8 +342,12 @@ async function editProduct(id) {
     editingProductId = id;
 
     document.getElementById("productName").value = data.name;
-    document.getElementById("productDescription").value = data.description;
-    document.getElementById("productPrice").value = data.price;
+
+    document.getElementById("productDescription").value =
+        data.description;
+
+    document.getElementById("productPrice").value =
+        data.price;
 
     document.getElementById("saveBtn").textContent =
         "Update Product";
@@ -372,13 +378,15 @@ async function deleteProduct(id) {
 
     if (error) {
 
+        console.error(error);
+
         alert(error.message);
 
         return;
 
     }
 
-    alert("Product deleted successfully!");
+    alert("Product deleted successfully.");
 
     loadProducts();
 
