@@ -322,6 +322,9 @@ async function loadProducts() {
 // =========================================
 
 async function editProduct(id) {
+async function editProduct(id) {
+
+    console.log("Editing product:", id);
 
     const { data, error } = await window.supabaseClient
         .from("products")
@@ -329,40 +332,27 @@ async function editProduct(id) {
         .eq("id", id)
         .single();
 
+    console.log("Data:", data);
+    console.log("Error:", error);
+
     if (error) {
-
-        console.error(error);
-
         alert(error.message);
-
         return;
-
     }
 
     editingProductId = id;
 
-    document.getElementById("productName").value = data.name;
+    document.getElementById("productName").value = data.name || "";
+    document.getElementById("productDescription").value = data.description || "";
+    document.getElementById("productPrice").value = data.price || "";
 
-    document.getElementById("productDescription").value =
-        data.description;
-
-    document.getElementById("productPrice").value =
-        data.price;
-
-    document.getElementById("saveBtn").textContent =
-        "Update Product";
+    document.getElementById("saveBtn").textContent = "Update Product";
 
     window.scrollTo({
-
         top: 0,
-
         behavior: "smooth"
-
     });
-
-}
-
-
+        }
 // =========================================
 // DELETE PRODUCT
 // =========================================
