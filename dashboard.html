@@ -3,50 +3,63 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Admin Dashboard</title>
+<title>God's Goodness Venture Admin</title>
 
-    <link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="admin.css">
 
 </head>
 
 <body>
 
-    <header>
+<header class="topbar">
 
-        <h1>God's Goodness Venture Admin Dashboard</h1>
+    <h1>God's Goodness Venture</h1>
 
-        <button id="logoutBtn">Logout</button>
+    <button id="logoutBtn">Logout</button>
 
-    </header>
+</header>
+
+<div class="dashboard">
+
+    <!-- Statistics -->
 
     <section class="stats">
 
         <div class="card">
-            <h2>Total Products</h2>
+
+            <h3>Products</h3>
+
             <h1 id="totalProducts">0</h1>
+
         </div>
 
         <div class="card">
-            <h2>Total Reviews</h2>
+
+            <h3>Reviews</h3>
+
             <h1 id="totalReviews">0</h1>
+
         </div>
 
         <div class="card">
-            <h2>Website Visits</h2>
+
+            <h3>Website Visits</h3>
+
             <h1 id="totalVisits">0</h1>
+
         </div>
 
     </section>
 
-    <hr>
+    <!-- Product Form -->
 
-    <section>
+    <section class="formSection">
 
-        <h2>Add Product</h2>
+        <h2>Add / Edit Product</h2>
 
         <form id="productForm">
 
@@ -70,22 +83,25 @@
             <input
                 type="file"
                 id="productImage"
-                accept="image/*"
-                required>
+                accept="image/*">
 
-            <button type="submit">
-                Add Product
+            <button
+                id="saveBtn"
+                type="submit">
+
+                Save Product
+
             </button>
 
         </form>
 
     </section>
 
-    <hr>
+    <!-- Products -->
 
     <section>
 
-        <h2>Manage Products</h2>
+        <h2>Products</h2>
 
         <div id="productsList">
 
@@ -95,7 +111,7 @@
 
     </section>
 
-    <hr>
+    <!-- Reviews -->
 
     <section>
 
@@ -109,55 +125,14 @@
 
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script src="../supabase.js"></script>
-
-    <script src="dashboard.js"></script>
-
-</body>
-
-</html>
 </div>
 
-<hr>
-
-<h2>Add Product</h2>
-
-<form id="productForm">
-
-    <input
-        type="text"
-        id="productName"
-        placeholder="Product Name"
-        required>
-
-    <textarea
-        id="productDescription"
-        placeholder="Description"
-        required></textarea>
-
-    <input
-        type="text"
-        id="productPrice"
-        placeholder="Price"
-        required>
-
-    <input
-        type="file"
-        id="productImage"
-        accept="image/*"
-        required>
-
-    <button type="submit">
-        Add Product
-    </button>
-
-</form>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="../supabase.js"></script>
+
 <script src="dashboard.js"></script>
 
 </body>
+
 </html>
