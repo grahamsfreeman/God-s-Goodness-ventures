@@ -470,6 +470,8 @@ async function loadReviews() {
 
 async function deleteReview(id) {
 
+    console.log("Deleting review:", id);
+
     if (!confirm("Delete this review?")) return;
 
     const { error } = await window.supabaseClient
@@ -479,13 +481,15 @@ async function deleteReview(id) {
 
     if (error) {
 
+        console.error(error);
+
         alert(error.message);
 
         return;
 
     }
 
-    alert("Review deleted successfully!");
+    alert("Review deleted!");
 
     loadReviews();
 
