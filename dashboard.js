@@ -469,10 +469,93 @@ async function loadReviews() {
 // =========================================
 
 async function deleteReview(id) {
+// =========================================
+// LOAD REVIEWS
+// =========================================
+
+async function loadReviews() {
+
+    const reviewsList = document.getElementById("reviewsList");
+
+    if (!reviewsList) return;
+
+    reviewsList.innerHTML = "Loading reviews...";
+
+    const { data, error } = await window.supabaseClient
+        .from("reviews")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+
+        console.error(error);
+
+        reviewsList.innerHTML = "Failed to load reviews.";
+
+        return;
+
+    }
+
+    if (!data || data.length === 0) {
+
+        reviewsList.innerHTML = "<p>No reviews yet.</p>";
+
+        return;
+
+    }
+
+    reviewsList.innerHTML = "";
+
+    data.forEach(review => {
+
+        const stars = "⭐".repeat(Number(review.rating || 0));
+
+        reviewsList.innerHTML += `
+
+        <div class="review-card">
+
+            <div class="product-info">
+
+                <h3>${review.name}</h3>
+
+                <p>${stars}</p>
+
+                <p>${review.message}</p>
+
+                <small>${new Date(review.created_at).toLocaleString()}</small>
+
+            </div>
+
+            <div class="action-buttons">
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteReview('${review.id}')">
+
+                    Delete
+
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+// =========================================
+// DELETE REVIEW
+// =========================================
+
+async function deleteReview(id) {
+
+    if (!confirm("Are you sure you want to delete this review?")) return;
 
     console.log("Deleting review:", id);
-
-    if (!confirm("Delete this review?")) return;
 
     const { error } = await window.supabaseClient
         .from("reviews")
@@ -489,9 +572,20 @@ async function deleteReview(id) {
 
     }
 
-    alert("Review deleted!");
+    alert("Review deleted successfully!");
 
-    loadReviews();
+    await loadReviews();
+
+    await loadStats();
+
+}
+
+
+// =========================================
+// INITIAL LOAD
+// =========================================
+
+loadReviews();
 
     loadStats();
 
