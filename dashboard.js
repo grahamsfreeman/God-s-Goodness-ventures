@@ -2,6 +2,7 @@
 // GOD'S GOODNESS VENTURE ADMIN DASHBOARD
 // =========================================
 
+// Global Variables
 let editingProductId = null;
 
 
@@ -11,9 +12,8 @@ let editingProductId = null;
 
 async function checkAdmin() {
 
-    const {
-        data: { session }
-    } = await window.supabaseClient.auth.getSession();
+    const { data: { session } } =
+        await window.supabaseClient.auth.getSession();
 
     if (!session) {
 
@@ -23,8 +23,6 @@ async function checkAdmin() {
     }
 
 }
-
-checkAdmin();
 
 
 // =========================================
@@ -47,7 +45,7 @@ if (logoutBtn) {
 
 
 // =========================================
-// LOAD DASHBOARD STATISTICS
+// LOAD DASHBOARD STATS
 // =========================================
 
 async function loadStats() {
@@ -57,8 +55,10 @@ async function loadStats() {
         await window.supabaseClient
         .from("products")
         .select("*", {
+
             count: "exact",
             head: true
+
         });
 
     document.getElementById("totalProducts").textContent =
@@ -70,35 +70,28 @@ async function loadStats() {
         await window.supabaseClient
         .from("reviews")
         .select("*", {
+
             count: "exact",
             head: true
+
         });
 
     document.getElementById("totalReviews").textContent =
         reviewCount || 0;
 
 
-    // Website Visits
-    const { data: visitData } =
+    // Visits
+    const { data: visit } =
         await window.supabaseClient
         .from("visits")
-        .select("*")
-        .limit(1);
+        .select("count")
+        .eq("id", 1)
+        .single();
 
-    if (visitData && visitData.length > 0) {
-
-        document.getElementById("totalVisits").textContent =
-            visitData[0].count;
-
-    } else {
-
-        document.getElementById("totalVisits").textContent = 0;
-
-    }
+    document.getElementById("totalVisits").textContent =
+        visit ? visit.count : 0;
 
 }
-
-loadStats();
 // =========================================
 // PRODUCT FORM
 // =========================================
@@ -118,7 +111,7 @@ if (productForm) {
 
         let imageUrl = null;
 
-        // Upload image if one was selected
+        // Upload image if selected
         if (imageFile) {
 
             const fileName = `${Date.now()}-${imageFile.name}`;
@@ -131,7 +124,6 @@ if (productForm) {
             if (uploadError) {
 
                 alert(uploadError.message);
-
                 return;
 
             }
@@ -145,11 +137,8 @@ if (productForm) {
 
         }
 
-        // ==========================
         // UPDATE PRODUCT
-        // ==========================
-
-        if (editingProductId !== null) {
+        if (editingProductId) {
 
             const updateData = {
 
@@ -174,12 +163,11 @@ if (productForm) {
             if (error) {
 
                 alert(error.message);
-
                 return;
 
             }
 
-            alert("Product Updated!");
+            alert("Product Updated Successfully!");
 
             editingProductId = null;
 
@@ -188,16 +176,12 @@ if (productForm) {
 
         }
 
-        // ==========================
         // ADD PRODUCT
-        // ==========================
-
         else {
 
             if (!imageUrl) {
 
-                alert("Please choose an image.");
-
+                alert("Please select a product image.");
                 return;
 
             }
@@ -217,25 +201,14 @@ if (productForm) {
             if (error) {
 
                 alert(error.message);
-
                 return;
 
             }
 
-            alert("Product Added!");
+            alert("Product Added Successfully!");
 
         }
-
-        productForm.reset();
-
-        loadProducts();
-
-        loadStats();
-
-    });
-
-        }
-// =========================================
+        // =========================================
 // LOAD PRODUCTS
 // =========================================
 
@@ -250,19 +223,21 @@ async function loadProducts() {
     const { data, error } = await window.supabaseClient
         .from("products")
         .select("*")
-        .order("id", { ascending: false });
+        .order("created_at", { ascending: false });
 
     if (error) {
 
-        productsList.innerHTML = error.message;
+        console.error(error);
+
+        productsList.innerHTML = "<p>Failed to load products.</p>";
 
         return;
 
     }
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
 
-        productsList.innerHTML = "<p>No products available.</p>";
+        productsList.innerHTML = "<p>No products found.</p>";
 
         return;
 
@@ -284,7 +259,7 @@ async function loadProducts() {
 
                 <p>${product.description}</p>
 
-                <strong>${product.price}</strong>
+                <strong>₦${product.price}</strong>
 
             </div>
 
@@ -322,9 +297,6 @@ async function loadProducts() {
 // =========================================
 
 async function editProduct(id) {
-async function editProduct(id) {
-
-    console.log("Editing product:", id);
 
     const { data, error } = await window.supabaseClient
         .from("products")
@@ -332,34 +304,40 @@ async function editProduct(id) {
         .eq("id", id)
         .single();
 
-    console.log("Data:", data);
-    console.log("Error:", error);
-
     if (error) {
+
         alert(error.message);
+
         return;
+
     }
 
     editingProductId = id;
 
-    document.getElementById("productName").value = data.name || "";
-    document.getElementById("productDescription").value = data.description || "";
-    document.getElementById("productPrice").value = data.price || "";
+    document.getElementById("productName").value = data.name;
+    document.getElementById("productDescription").value = data.description;
+    document.getElementById("productPrice").value = data.price;
 
     document.getElementById("saveBtn").textContent = "Update Product";
 
     window.scrollTo({
+
         top: 0,
+
         behavior: "smooth"
+
     });
-        }
+
+}
+
+
 // =========================================
 // DELETE PRODUCT
 // =========================================
 
 async function deleteProduct(id) {
 
-    if (!confirm("Delete this product?")) return;
+    if (!confirm("Are you sure you want to delete this product?")) return;
 
     const { error } = await window.supabaseClient
         .from("products")
@@ -367,8 +345,6 @@ async function deleteProduct(id) {
         .eq("id", id);
 
     if (error) {
-
-        console.error(error);
 
         alert(error.message);
 
@@ -378,98 +354,12 @@ async function deleteProduct(id) {
 
     alert("Product deleted successfully.");
 
-    loadProducts();
+    await loadProducts();
 
-    loadStats();
+    await loadStats();
 
-}
-
-
-// =========================================
-// INITIAL LOAD
-// =========================================
-
-loadProducts();
-// =========================================
-// LOAD REVIEWS
-// =========================================
-
-async function loadReviews() {
-
-    const reviewsList = document.getElementById("reviewsList");
-
-    if (!reviewsList) return;
-
-    reviewsList.innerHTML = "Loading reviews...";
-
-    const { data, error } = await window.supabaseClient
-        .from("reviews")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-    if (error) {
-
-        reviewsList.innerHTML = error.message;
-
-        return;
-
-    }
-
-    if (data.length === 0) {
-
-        reviewsList.innerHTML = "<p>No reviews yet.</p>";
-
-        return;
-
-    }
-
-    reviewsList.innerHTML = "";
-
-    data.forEach(review => {
-
-        reviewsList.innerHTML += `
-
-        <div class="review-card">
-
-            <div class="product-info">
-
-                <h3>${review.name}</h3>
-
-                <p>${"⭐".repeat(review.rating)}</p>
-
-                <p>${review.message}</p>
-
-                <small>${new Date(review.created_at).toLocaleString()}</small>
-
-            </div>
-
-            <div class="action-buttons">
-
-                <button
-                    class="delete-btn"
-                    onclick="deleteReview(${review.id})">
-
-                    Delete
-
-                </button>
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
-}
-
-
-// =========================================
-// DELETE REVIEW
-// =========================================
-
-async function deleteReview(id) {
-// =========================================
+        }
+        // =========================================
 // LOAD REVIEWS
 // =========================================
 
@@ -490,7 +380,7 @@ async function loadReviews() {
 
         console.error(error);
 
-        reviewsList.innerHTML = "Failed to load reviews.";
+        reviewsList.innerHTML = "<p>Failed to load reviews.</p>";
 
         return;
 
@@ -498,7 +388,7 @@ async function loadReviews() {
 
     if (!data || data.length === 0) {
 
-        reviewsList.innerHTML = "<p>No reviews yet.</p>";
+        reviewsList.innerHTML = "<p>No reviews available.</p>";
 
         return;
 
@@ -508,17 +398,17 @@ async function loadReviews() {
 
     data.forEach(review => {
 
-        const stars = "⭐".repeat(Number(review.rating || 0));
+        const stars = "⭐".repeat(Number(review.rating) || 0);
 
         reviewsList.innerHTML += `
 
         <div class="review-card">
 
-            <div class="product-info">
+            <div class="review-info">
 
                 <h3>${review.name}</h3>
 
-                <p>${stars}</p>
+                <p class="stars">${stars}</p>
 
                 <p>${review.message}</p>
 
@@ -553,9 +443,7 @@ async function loadReviews() {
 
 async function deleteReview(id) {
 
-    if (!confirm("Are you sure you want to delete this review?")) return;
-
-    console.log("Deleting review:", id);
+    if (!confirm("Delete this review?")) return;
 
     const { error } = await window.supabaseClient
         .from("reviews")
@@ -578,88 +466,14 @@ async function deleteReview(id) {
 
     await loadStats();
 
-}
+        }
 
+        productForm.reset();
 
-// =========================================
-// INITIAL LOAD
-// =========================================
+        await loadProducts();
 
-loadReviews();
+        await loadStats();
 
-    loadStats();
+    });
 
-}
-
-
-// =========================================
-// INITIAL REVIEW LOAD
-// =========================================
-
-loadReviews();
-// =========================================
-// WEBSITE VISITS
-// =========================================
-
-async function loadVisits() {
-
-    const { data, error } = await window.supabaseClient
-        .from("visits")
-        .select("count")
-        .eq("id", 1)
-        .single();
-
-    if (error) {
-
-        console.error(error);
-        return;
-
-    }
-
-    document.getElementById("totalVisits").textContent =
-        data.count;
-
-}
-
-loadVisits();
-
-
-// =========================================
-// REFRESH DASHBOARD
-// =========================================
-
-async function refreshDashboard() {
-
-    await loadStats();
-
-    await loadProducts();
-
-    await loadReviews();
-
-    await loadVisits();
-
-}
-
-
-// =========================================
-// AUTO REFRESH EVERY 30 SECONDS
-// =========================================
-
-setInterval(() => {
-
-    refreshDashboard();
-
-}, 30000);
-
-
-// =========================================
-// DASHBOARD READY
-// =========================================
-
-window.addEventListener("load", () => {
-
-    refreshDashboard();
-
-    console.log("Admin Dashboard Ready");
-
-});
+            }
